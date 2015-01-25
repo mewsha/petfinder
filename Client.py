@@ -31,7 +31,9 @@ class CuteOrNot(QDialog):
 		
 		label = QLabel("Cute Or Not?")
 		pxmap1 = QPixmap(pet1Data)
+		print pxmap1
 		pxmap2 = QPixmap(pet2Data)
+		print pxmap2
 		pet1Image = QLabel(self)
 		pet2Image = QLabel(self)
 		pet1Image.setPixmap(pxmap1)
@@ -50,10 +52,9 @@ class CuteOrNot(QDialog):
 		layout.addWidget(leaderButton, 3, 1)		
 		
 		self.setLayout(layout)
-		
+		self.setWindowTitle('Cute or Not?')
 		exitButton.clicked.connect(self.close)
 		
-
 	def showPets(self):
 		pet1Data = self.webServ.getAPet()
 		pet2Data = self.webServ.getAPet()
@@ -64,12 +65,15 @@ class CuteOrNot(QDialog):
 		self.layoutPets(pet1ImgData, pet2ImgData)
 		
 	def downloadImage(self, url, filename):
-		save_location = '~/Downloads/'+ filename
+		imagefile = QImage()
+		#save_spot = '~/Downloads/'+ filename
 		#response = urllib2.Request(url)
-		#imageData = urllib2.urlopen(response)
-		#image = imageData.read()
-		urllib.urlretrieve(url, save_location)
-		
+		urldata = urllib2.urlopen(url)
+		imagedata = urldata.read()
+		imagefile.loadFromData(imagedata)
+		#urllib.urlretrieve(url, save_spot)
+		#image = None
+		return imagefile
 		
 app = QApplication(sys.argv)
 dialog = CuteOrNot()
