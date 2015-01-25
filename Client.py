@@ -17,6 +17,7 @@ class CuteOrNot(QDialog):
 		self.showPets()
 		self.setWindowTitle('Cute or Not?')
 
+
 	def layoutLeaderboard(self):
 		"""
 		Created and displays UI for the leaderboard view
@@ -29,30 +30,30 @@ class CuteOrNot(QDialog):
 		layout.addWidget(label, 0, 1)
 		layout.addWidget(label2, 0 , 2)
 		layout.addWidget(backButton, 1, 0)
-				
+			
+		self.removeLayout()
 		self.setLayout(layout)
 		
-		backbButton.clicked.connect(self.showPets)
+		backButton.clicked.connect(self.showPets)
 
-	def layoutPets(self, pet1Data, pet2Data):
+
+	def layoutPets(self, pet1Data, pxmap1, pet2Data, pxmap2):
 		"""
 		Creates and displays UI for the Pet view. 
 		"""
+		layout = QGridLayout()
+				
+		label = QLabel("Cute Or Not?")
 		pet1Image = QLabel(self)
 		pet2Image = QLabel(self)
 		imgpolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 		pet1Image.setSizePolicy(imgpolicy)
 		pet2Image.setSizePolicy(imgpolicy)
-			
-		layout = QGridLayout()
-		
-		label = QLabel("Cute Or Not?")
-		pxmap1 = QPixmap(pet1Data)
-		pxmap2 = QPixmap(pet2Data)
 		pet1Image.setPixmap(pxmap1)
 		pet2Image.setPixmap(pxmap2)
 		pet1Image.setFixedHeight(300)
 		pet2Image.setFixedHeight(300)
+		
 		pet1Button = QPushButton("I'm Cuter!")
 		pet2Button = QPushButton("I'm Cutest!")
 		exitButton = QPushButton("Close")
@@ -69,32 +70,31 @@ class CuteOrNot(QDialog):
 		self.setLayout(layout)
 		
 		exitButton.clicked.connect(self.close)
-		
+		leaderButton.clicked.connect(self.showLeaderBoard)
+		pet1Button.clicked.connect(self.increaseScore)
+		pet2Button.clicked.connect(self.increaseScore)
+
+	def increaseScore(self, pet):
+		"""
+		Increment the score for the pet on the leaderboard.
+		This will add a new pet if the pet doesn't exist.
+		"""
+		#Add some stuff here to increment a score in a database
+		pass
+
+	def showLeaderBoard(self):
+		""" Show the leader board view in the window """
+		#Add some stuff here to gather information for getting SQL data
+		self.layoutLeaderboard()
+
 		
 	def showPets(self):
-		"""
-		Show the pet view in the window
-		"""
-		pet1Data = self.webServ.getAPet()
-		pet2Data = self.webServ.getAPet()
-		pet1ImgURL = pet1Data['photo']['$t']
-		pet2ImgURL = pet2Data['photo']['$t']
-		pet1ImgData = self.downloadImage(pet1ImgURL)
-		pet2ImgData = self.downloadImage(pet2ImgURL)
-		self.layoutPets(pet1ImgData, pet2ImgData)
+		""" Show the pet view in the window """
+		pet1Data, pet2Data = self.webServ.getAPet(), self.webServ.getAPet()
+		pet1Image = self.webServ.downloadPhoto(pet1Data)
+		pet2Image = self.webServ.downloadPhoto(pet2Data)
+		self.layoutPets(pet1Data, pet1Image, pet2Data, pet2Image)
 		
-	def downloadImage(self, url):
-		"""
-		Download the pet image from a given url.
-		
-		Returns:
-		QImage object with the pet's image
-		"""
-		imagefile = QImage()
-		urldata = urllib2.urlopen(url)
-		imagedata = urldata.read()
-		imagefile.loadFromData(imagedata)
-		return imagefile
 		
 app = QApplication(sys.argv)
 dialog = CuteOrNot()
