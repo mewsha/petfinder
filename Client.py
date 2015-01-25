@@ -17,6 +17,15 @@ class CuteOrNot(QDialog):
 		self.showPets()
 		self.setWindowTitle('Cute or Not?')
 
+	def clearLayout(self):
+		#Think about using a QStackedWidget instead
+		if (self.layout() != None):
+			layout = self.layout()
+			for i in range(layout.count()):
+				item = layout.itemAt(i)
+				item.widget().setParent(None)
+				layout.removeItem(item)
+
 
 	def layoutLeaderboard(self):
 		"""
@@ -31,7 +40,7 @@ class CuteOrNot(QDialog):
 		layout.addWidget(label2, 0 , 2)
 		layout.addWidget(backButton, 1, 0)
 			
-		self.removeLayout()
+		self.clearLayout()
 		self.setLayout(layout)
 		
 		backButton.clicked.connect(self.showPets)
@@ -67,6 +76,7 @@ class CuteOrNot(QDialog):
 		layout.addWidget(exitButton, 3, 0)
 		layout.addWidget(leaderButton, 3, 1)		
 		
+		self.clearLayout()
 		self.setLayout(layout)
 		
 		exitButton.clicked.connect(self.close)
