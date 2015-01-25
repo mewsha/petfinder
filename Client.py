@@ -3,6 +3,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
+import urllib
 import urllib2
 import WebServices
 
@@ -17,7 +18,6 @@ class CuteOrNot(QDialog):
 
 	def layoutLeaderboard(self):
 		layout = QGridLayout()
-		
 		label = QLabel("images here")
 		label2 = QLabel("scroll here")
 
@@ -30,20 +30,24 @@ class CuteOrNot(QDialog):
 		layout = QGridLayout()
 		
 		label = QLabel("Cute Or Not?")
-		pet1Image = QImage(pet1Data)
-		pet2Image = QImage(pet2Data)
+		pxmap1 = QPixmap(pet1Data)
+		pxmap2 = QPixmap(pet2Data)
+		pet1Image = QLabel(self)
+		pet2Image = QLabel(self)
+		pet1Image.setPixmap(pxmap1)
+		pet2Image.setPixmap(pxmap2)
 		pet1Button = QPushButton("Cuter")
 		pet2Button = QPushButton("Cutest")
 		exitButton = QPushButton("Close")
 		leaderButton = QPushButton("Leaderboard")
 		
-		layout.addWidget(label)
-		layout.addWidget(pet1Image, 0, 0)
-		layouy.addWidget(pet2Image, 0, 1)
-		layout.addWidget(pet1Button, 1, 0)
-		layout.addWidget(pet2Button, 1, 1)
-		layout.addWidget(exitButton, 2, 0)
-		layout.addWidget(leaderButton, 2, 1)		
+		layout.addWidget(label, 0, 0)
+		layout.addWidget(pet1Image, 1, 0)
+		layout.addWidget(pet2Image, 1, 1)
+		layout.addWidget(pet1Button, 2, 0)
+		layout.addWidget(pet2Button, 2, 1)
+		layout.addWidget(exitButton, 3, 0)
+		layout.addWidget(leaderButton, 3, 1)		
 		
 		self.setLayout(layout)
 		
@@ -60,11 +64,11 @@ class CuteOrNot(QDialog):
 		self.layoutPets(pet1ImgData, pet2ImgData)
 		
 	def downloadImage(self, url, filename):
-		save_location = '~/Downloads/PetFinder/'+ filename
-		response = urllib2.Request(url)
-		imageData = urllib2.urlopen(response)
-		image = imageData.read()
-		return image
+		save_location = '~/Downloads/'+ filename
+		#response = urllib2.Request(url)
+		#imageData = urllib2.urlopen(response)
+		#image = imageData.read()
+		urllib.urlretrieve(url, save_location)
 		
 		
 app = QApplication(sys.argv)
