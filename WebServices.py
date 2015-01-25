@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from PyQt4.QtGui import *
 import urllib2
 import json
 
@@ -77,7 +78,24 @@ class WebServices(object):
 				  "{0} {1}").format(type(e), e)
 		return data
 		
+
+	def downloadPhoto(self, pet):
+		"""
+		Download the pet image from a given url.
 		
+		Returns:
+		QPixmap object with the pet's image
+		"""
+		url = pet['photo']['$t']
+		imagefile = QImage()
+		displayImage = None
+		urldata = urllib2.urlopen(url)
+		imagedata = urldata.read()
+		imagefile.loadFromData(imagedata)
+		displayImage = QPixmap(imagefile)
+		return displayImage
+		
+
 	def getAPet(self):
 		"""
 		Gets pet data from the petfinder.com api and returns photo info.
@@ -85,7 +103,6 @@ class WebServices(object):
 		Returns:
 		Dict {id:"petid", name:"petname", photo:"photoURL"}
 		"""
-		
 		jsonData = self.requestPetData()
 		finderData = self.interpretJSONData(jsonData)
 		myPetData = finderData['petfinder']['pet']
