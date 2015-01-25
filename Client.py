@@ -19,13 +19,23 @@ class CuteOrNot(QDialog):
 
 	def clearLayout(self):
 		#Think about using a QStackedWidget instead
-		if (self.layout() != None):
-			layout = self.layout()
-			for i in range(layout.count()):
-				item = layout.itemAt(i)
-				item.widget().setParent(None)
-				layout.removeItem(item)
-
+		try:
+			if (self.layout() is not None):
+				layout = self.layout()			
+				while (layout.count() >= 1):
+					for i in range(layout.count(), 0):
+						item = layout.itemAt(i)
+						if isinstance(item, QWidgetItem):
+							item.widget().close()
+						#if(item is not None):
+							#item.deleteLater()
+						#print item, type(item)
+						#item.widget().setParent(None)
+						layout.removeItem(item)
+			print self.layout()
+		except (Exception) as e:
+			print("An exception occured while clearing layouts,"
+				  "{0} {1}").format(type(e), e)
 
 	def layoutLeaderboard(self):
 		"""
@@ -75,7 +85,13 @@ class CuteOrNot(QDialog):
 		layout.addWidget(pet2Button, 2, 1)
 		layout.addWidget(exitButton, 3, 0)
 		layout.addWidget(leaderButton, 3, 1)		
-		
+		"""
+		print layout, type(layout)
+		for i in range(layout.count()):
+				item = layout.itemAt(i)
+				print item, type(item)
+		"""
+
 		self.clearLayout()
 		self.setLayout(layout)
 		
