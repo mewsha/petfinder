@@ -1,4 +1,4 @@
-#!/usr/lib/python
+#!/usr/bin/python
 
 import urllib2
 import json
@@ -28,7 +28,7 @@ class WebServices(object):
 			response = urllib2.Request(self.apiURI)
 			petData = urllib2.urlopen(response)
 			jsonInfo = petData.read()
-		except (urllib2.HTTPError, Exception) as e:
+		except (urllib2.HTTPError, IOError, Exception) as e:
 			print "An Exception occured: {0}, {1}".format(type(e), e)
 		return jsonInfo		
 	
@@ -92,3 +92,7 @@ class WebServices(object):
 		myPetPhoto = self.pickPhoto(myPetData)
 		return myPetPhoto
 		
+		
+	if(__name__ == '__main__'):
+		petData = getAPet()
+		print petData
