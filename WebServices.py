@@ -63,19 +63,15 @@ class WebServices(object):
 		"""
 		
 		data = ""
-		try:
-			if(petData is None or petData == ""):
-				raise RuntimeError("There is no pet data to pick a photo")
-			else:
-				media = petData['media']
-				photo = media['photos']['photo'][2]
-				
-				data = {'id':petData['id'], 
-						'name':petData['name'],
-						'photo':photo}
-		except Exception as e:
-			print("An exception occured while picking a photo:"
-				  "{0} {1}").format(type(e), e)
+		if(petData is None or petData == ""):
+			raise RuntimeError("There is no pet data to pick a photo")
+		else:
+			media = petData['media']
+			photo = media['photos']['photo'][2]
+			
+			data = {'id':petData['id'], 
+					'name':petData['name'],
+					'photo':photo}
 		return data
 		
 
@@ -103,11 +99,18 @@ class WebServices(object):
 		Returns:
 		Dict {id:"petid", name:"petname", photo:"photoURL"}
 		"""
-		jsonData = self.requestPetData()
-		finderData = self.interpretJSONData(jsonData)
-		myPetData = finderData['petfinder']['pet']
-		myPetPhoto = self.pickPhoto(myPetData)
-		return myPetPhoto
+		try:
+			jsonData = self.requestPetData()
+			finderData = self.interpretJSONData(jsonData)
+			myPetData = finderData['petfinder']['pet']
+			myPetPhoto = self.pickPhoto(myPetData)
+			return myPetPhoto
+		except (TypeError, KeyError):
+			#Pet does not contain data needed, pick again
+			return getAPet()
+		except Exception:
+			print("An exception occured while getting a pet"
+				  "{0} {1}").format(type(e), e)
 		
 		
 	if(__name__ == '__main__'):
