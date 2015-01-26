@@ -17,21 +17,21 @@ class CuteOrNot(QDialog):
 		self.showPets()
 		self.setWindowTitle('Cute or Not?')
 
-	def clearLayout(self):
+	def clearLayout(self, layout):
 		#Think about using a QStackedWidget instead
 		try:
-			if (self.layout() is not None):
-				layout = self.layout()			
-				while (layout.count() >= 1):
-					for i in range(layout.count(), 0):
-						item = layout.itemAt(i)
-						if isinstance(item, QWidgetItem):
-							item.widget().close()
-						#if(item is not None):
-							#item.deleteLater()
-						#print item, type(item)
-						#item.widget().setParent(None)
-						layout.removeItem(item)
+			if (layout is not None):	
+				for i in range(layout.count(), 0):
+					item = layout.itemAt(i)
+					if isinstance(item, QWidgetItem):
+						item.widget().close()
+					else:
+						self.clearLayout(item.layout())
+					#if(item is not None):
+						#item.deleteLater()
+					#print item, type(item)
+					#item.widget().setParent(None)
+					layout.removeItem(item)
 			print self.layout()
 		except (Exception) as e:
 			print("An exception occured while clearing layouts,"
@@ -42,6 +42,7 @@ class CuteOrNot(QDialog):
 		Created and displays UI for the leaderboard view
 		"""
 		layout = QGridLayout()
+
 		label = QLabel("images here")
 		label2 = QLabel("scroll here")
 		backButton = QPushButton("Back to Pets")
@@ -50,7 +51,7 @@ class CuteOrNot(QDialog):
 		layout.addWidget(label2, 0 , 2)
 		layout.addWidget(backButton, 1, 0)
 			
-		self.clearLayout()
+		self.clearLayout(self.layout())
 		self.setLayout(layout)
 		
 		backButton.clicked.connect(self.showPets)
@@ -78,6 +79,7 @@ class CuteOrNot(QDialog):
 		exitButton = QPushButton("Close")
 		leaderButton = QPushButton("Leaderboard")
 		
+		
 		layout.addWidget(label, 0, 0)
 		layout.addWidget(pet1Image, 1, 0)
 		layout.addWidget(pet2Image, 1, 1)
@@ -92,7 +94,7 @@ class CuteOrNot(QDialog):
 				print item, type(item)
 		"""
 
-		self.clearLayout()
+		self.clearLayout(self.layout())
 		self.setLayout(layout)
 		
 		exitButton.clicked.connect(self.close)
