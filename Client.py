@@ -8,11 +8,13 @@ import urllib2
 import WebServices
 
 class CuteOrNot(QDialog):
+
 	def __init__(self):
 		"""
 		Initialize the window with a grid layout.
 		"""
 		QDialog.__init__(self)
+		self.petImageDisplayHeight = 300
 		self.webServ = WebServices.WebServices()	
 		layout = QGridLayout()
 		self.setLayout(layout)
@@ -67,16 +69,14 @@ class CuteOrNot(QDialog):
 		imgpolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 		pet1Image.setSizePolicy(imgpolicy)
 		pet2Image.setSizePolicy(imgpolicy)
-		pet1Image.setPixmap(pxmap1)
-		pet2Image.setPixmap(pxmap2)
-		pet1Image.setFixedHeight(300)
-		pet2Image.setFixedHeight(300)
-		
+		pet1Image.setFixedHeight(self.petImageDisplayHeight)
+		pet2Image.setFixedHeight(self.petImageDisplayHeight)
+		pet1Image.setPixmap(pxmap1.scaledToHeight(pet1Image.height()))
+		pet2Image.setPixmap(pxmap2.scaledToHeight(pet2Image.height()))
 		pet1Button = QPushButton("I'm Cuter!")
 		pet2Button = QPushButton("I'm Cutest!")
 		exitButton = QPushButton("Close")
 		leaderButton = QPushButton("Leaderboard")
-		
 		
 		layout.addWidget(label, 0, 0)
 		layout.addWidget(pet1Image, 1, 0)
@@ -85,13 +85,7 @@ class CuteOrNot(QDialog):
 		layout.addWidget(pet2Button, 2, 1)
 		layout.addWidget(exitButton, 3, 0)
 		layout.addWidget(leaderButton, 3, 1)
-		"""
-		print layout, type(layout)
-		for i in range(layout.count()):
-				item = layout.itemAt(i)
-				print item, type(item)
-				item.widget().hide()
-		"""
+
 		exitButton.clicked.connect(self.close)
 		leaderButton.clicked.connect(self.showLeaderBoard)
 		pet1Button.clicked.connect(self.increaseScore)
@@ -120,6 +114,7 @@ class CuteOrNot(QDialog):
 		This will add a new pet if the pet doesn't exist.
 		"""
 		#Add some stuff here to increment a score in a database
+		self.showPets()
 		pass	
 		
 
