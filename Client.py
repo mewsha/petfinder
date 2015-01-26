@@ -19,66 +19,24 @@ class CuteOrNot(QDialog):
 		self.showPets()
 		self.setWindowTitle('Cute or Not?')
 
-	def hideLayout(self, alayout):
-		"""
-		Hides all children of the layout
-		"""
-		#Think about using a QStackedWidget instead
-		try:
-			if (alayout is not None):	
-				for i in range(alayout.count(), 0):
-					item = alayout.itemAt(i)
-					if isinstance(item, QWidgetItem):
-						item.hide()
-					else:
-						self.clearLayout(item.layout())
-			print self.layout()
-			
-		except (Exception) as e:
-			print("An exception occured while clearing layouts,"
-				  "{0} {1}").format(type(e), e)
-
 
 	def clearLayout(self,layout):
-		#print layout, type(layout)
+		"""
+		Closes all children widgets of the current layout which will
+			1- hide the widgets
+			2- deletes the widgets
+		This prepares the layout for laying out new widgets.
+		Grid layout is not removed. 
+		"""
 		if(layout is not None):
 			for i in range(layout.count()):
 				item = layout.itemAt(i)
-				#print item, type(item)
-				#item.widget().hide()
 				if (item is not None):
-					item.widget().close()
-				#item.widget().setParent(None)
-				#layout.removeItem(item)
-				#del item
-			print self.layout()
-
-
-	def stupidLayout(self, layout):
-		"""
-		Clears all children of the layout.
-		"""
-		#Think about using a QStackedWidget instead
-		try:
-			if (layout is not None):	
-				for i in range(layout.count(), 0):
-					item = layout.itemAt(i)
-					if isinstance(item, QWidgetItem):
-						pass #item.widget().close()
+					if(isinstance(item, QWidgetItem)):
+						item.widget().close()
 					else:
 						self.clearLayout(item.layout())
-					#if(item is not None):
-						#item.deleteLater()
-					#print item, type(item)
-					#item.widget().setParent(None)
-					#layout.removeItem(item)
-					#del item
-					item.widget().hide()
-			print self.layout()
-			
-		except (Exception) as e:
-			print("An exception occured while clearing layouts,"
-				  "{0} {1}").format(type(e), e)
+
 
 	def layoutLeaderboard(self):
 		"""
