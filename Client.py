@@ -46,13 +46,13 @@ class CuteOrNot(QDialog):
 						self.clearLayout(item.layout())
 
 
-	def layoutLeaderboard(self):
+	def layoutLeaderboard(self, petinfo):
 		"""
 		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
 
-		label = QLabel("images here")
+		label = QLabel(petinfo)
 		label2 = QLabel("scroll here")
 		backButton = QPushButton("Back to Pets")
 
@@ -94,8 +94,8 @@ class CuteOrNot(QDialog):
 
 		exitButton.clicked.connect(self.closeWindow)
 		leaderButton.clicked.connect(self.showLeaderBoard)
-		pet1Button.clicked.connect(self.increaseScore)
-		pet2Button.clicked.connect(self.increaseScore)
+		pet1Button.clicked.connect(lambda: self.increaseScore(pet1Data))
+		pet2Button.clicked.connect(lambda: self.increaseScore(pet2Data))
 
 
 	def closeWindow(self):
@@ -109,9 +109,9 @@ class CuteOrNot(QDialog):
 
 	def showLeaderBoard(self):
 		""" Show the leader board view in the window """
-		#Add some stuff here to gather information for getting SQL data
+		tabledata = self.dataServ.queryTable()
 		self.clearLayout(self.layout())
-		self.layoutLeaderboard()
+		self.layoutLeaderboard(tabledata)
 
 		
 	def showPets(self):
@@ -129,7 +129,7 @@ class CuteOrNot(QDialog):
 		This will add a new pet if the pet doesn't exist.
 		This also refreshes the two pets currently shown.
 		"""
-		#Add some stuff here to increment a score in a database
+		self.dataServ.increaseScore(pet)
 		self.showPets()
 		pass	
 		

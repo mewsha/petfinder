@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 import urllib2
 import json
 
+
 class WebServices(object):
 	apiURL = "http://api.petfinder.com/"
 	apiModule = "pet.getRandom"
@@ -12,10 +13,12 @@ class WebServices(object):
 	apiOutput = "&output=basic"
 	apiURI = apiURL+apiModule+apiKey+apiFormat+apiOutput
 	
+	
 	def __init__(self):
 		self.apiURI = WebServices.apiURI
 		pass
-		
+
+
 	def requestPetData(self):
 		"""
 		Obtain pet data for a random pet through petfinder.com
@@ -52,6 +55,7 @@ class WebServices(object):
 			print("An exception occured while formatting JSON:"
 				  "{0} {1}").format(type(e), e)
 		return data
+		
 		
 	def pickPhoto(self, petData):
 		"""
