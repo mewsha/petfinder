@@ -86,7 +86,7 @@ class WebServices(object):
 		Returns:
 		QPixmap object with the pet's image
 		"""
-		url = pet['photo']['$t']
+		url = pet['photo']
 		imagefile = QImage()
 		displayImage = None
 		urldata = urllib2.urlopen(url)
@@ -106,13 +106,21 @@ class WebServices(object):
 		try:
 			jsonData = self.requestPetData()
 			finderData = self.interpretJSONData(jsonData)
-			myPetData = finderData['petfinder']['pet']
-			myPetPhoto = self.pickPhoto(myPetData)
-			return myPetPhoto
+			
+			petData = finderData['petfinder']['pet']
+			name = petData['name']['$t']
+			idNum = petData['id']['$t']
+			media = petData['media']
+			photo = media['photos']['photo'][2]['$t']
+			
+			pet =  {'id':idNum, 
+					'name':name,
+					'photo':photo}
+			return pet
 		except (TypeError, KeyError):
-			#Pet does not contain data needed, pick again
-			return getAPet()
-		except Exception:
+			#AFAP: Pet does not contain data needed, pick again
+			return self.getAPet()
+		except Exception as e:
 			print("An exception occured while getting a pet"
 				  "{0} {1}").format(type(e), e)
 		
