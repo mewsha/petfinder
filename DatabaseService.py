@@ -11,6 +11,12 @@ class DatabaseService(object):
 		
 		
 	def generateConnection(self):
+		""" 
+		Creates a connection with the local database 
+		
+		Returns:
+		Success returns None. Failure returns an exception. 
+		"""
 		try:
 			self.con = mdb.connect('localhost', 'testuser', 'test623', 'testdb')
 			self.cur = self.con.cursor()
@@ -22,21 +28,32 @@ class DatabaseService(object):
 			
 	def createTable(self):
 		"""
-		*** Need to add something to check to see if the database already
-		exists, until then, I'm assuming it does and not calling
-		this function ***
-		Creates a cuteornot database if it doesn't exist.
+		Creates a cuteornot table if it doesn't exist.
 		Table stores the Pet Id, Name, Image URL.
-		There may be ways to make this better with QtSQL.		
+		There may be ways to make this better with QtSQL.	
+		
+		Table has three columns:
+		Name, ImageURL and Id	
 		"""
+		#Need to add something to check to see if the database already
+		#exists, until then, I'm assuming it does and not calling
+		#this function
 		self.cur.execute("CREATE DATABASE petfinder")
 		self.cur.execute("USE petfinder")
 		self.cur.execute("CREATE TABLE cuteornot(Id INT PRIMARY KEY\
-				          AUTO_INCREMENT, Name VARCHAR(25), ImageURL\
-						  VARCHAR(50)")
+				          AUTO_INCREMENT,"
+				          "IdNum VARCHAR(25),"
+				          "Name VARCHAR(50),"
+				          "ImageURL VARCHAR(100)")
 		
 	def queryTable(self):
-		"""Dumps the data from the petfinder database"""
+		"""
+		Dumps the data from the petfinder database.
+		
+		Returns:
+		Data encapsulated in (), python readable as tuples.
+		"""
+		#It would be nice if data was ret python formatted as [{} {}]
 		self.cur.execute("USE petfinder")
 		self.cur.execute("SELECT * FROM cuteornot")
 		data = self.cur.fetchall()
@@ -44,25 +61,34 @@ class DatabaseService(object):
 		
 	
 	def increaseScore(self, pet):
-		"""Increases the score for one pet"""
+		"""
+		Increases the score for one pet or adds a new pet if the
+		pet does not yet exist in the database
+		"""
 		#add something in here that searches the database to see if 
 		#the pet already exists. If it does, increase the score. 
 		#If the pet doesn't exist, insert a new pet into the database
-		#For now, always inserting a New pet, plus it's unlikely to 
-		#come across a new pet since the database is pretty large
+		#For now, always inserting pet. It's unlikely to 
+		#come across the same pet since the database is pretty large
 		self.insertNewPet(pet)
-		pass
+			
 	
 	def insertNewPet(self, pet):
 		"""Inserts a new pet into the database"""
-		name = pet['name']
 		idNum = pet['id']
+		name = pet['name']
 		url = pet['photo']
+		cols = "IdNum, Name, ImageURL"
+		values = "'{0}', '{1}', '{2}'".format(idNum, name, url)
 		
-		self.cur.execute("USE petfinder")
-		executionStr = ("INSERT INTO cuteornot(Name) VALUES"
-					   "('{0}')").format(name)
-		self.cur.execute(executionStr)
+		executionStr = ("INSERT INTO cuteornot({0}) VALUES"
+					    "({1})").format(cols, values)
+		try:
+			self.cur.execute("USE petfinder")
+			self.cur.execute(executionStr)
+		except Exception as e:
+			print("Database Insert Exception {0} {1}\n"
+				  "{2}").format(type(e), e, values)
 		
 	
 	def close(self):
