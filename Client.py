@@ -51,8 +51,10 @@ class CuteOrNot(QDialog):
 		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
-
-		label = QLabel(petinfo)
+		if (petinfo != () and petinfo != "" and petinfo is not None):
+			label = QLabel(str(petinfo))
+		else:
+			label = QLabel("pet data")
 		label2 = QLabel("scroll here")
 		backButton = QPushButton("Back to Pets")
 
