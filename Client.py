@@ -6,6 +6,7 @@ import sys
 import urllib
 import urllib2
 import WebServices
+import DatabaseService
 
 class CuteOrNot(QDialog):
 
@@ -15,7 +16,12 @@ class CuteOrNot(QDialog):
 		"""
 		QDialog.__init__(self)
 		self.petImageDisplayHeight = 300
-		self.webServ = WebServices.WebServices()	
+		self.webServ = WebServices.WebServices()
+		self.dataServ = DatabaseService.DatabaseService()
+		errors = self.dataServ.generateConnection()
+		if(errors is not None):
+			raise RuntimeError("Connection with database could not be "
+							   "established")
 		layout = QGridLayout()
 		self.setLayout(layout)
 		self.showPets()
@@ -26,9 +32,9 @@ class CuteOrNot(QDialog):
 		"""
 		Closes all children widgets of the current layout which will
 			1- hide the widgets
-			2- deletes the widgets
-		This prepares the layout for laying out new widgets.
-		Grid layout is not removed. 
+			2- delete the widgets
+		This prepares the layout for adding new widgets.
+		(Grid layout is not removed.) 
 		"""
 		if(layout is not None):
 			for i in range(layout.count()):
@@ -42,7 +48,7 @@ class CuteOrNot(QDialog):
 
 	def layoutLeaderboard(self):
 		"""
-		Created and displays UI for the leaderboard view
+		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
 
@@ -86,10 +92,19 @@ class CuteOrNot(QDialog):
 		layout.addWidget(exitButton, 3, 0)
 		layout.addWidget(leaderButton, 3, 1)
 
-		exitButton.clicked.connect(self.close)
+		exitButton.clicked.connect(self.closeWindow)
 		leaderButton.clicked.connect(self.showLeaderBoard)
 		pet1Button.clicked.connect(self.increaseScore)
 		pet2Button.clicked.connect(self.increaseScore)
+
+
+	def closeWindow(self):
+		"""
+		Allows the database service to close it's connection 
+		with the MySQL server before closing the window and application.
+		"""
+		self.dataServ.close()
+		self.close()
 
 
 	def showLeaderBoard(self):
@@ -112,6 +127,7 @@ class CuteOrNot(QDialog):
 		"""
 		Increment the score for the pet on the leaderboard.
 		This will add a new pet if the pet doesn't exist.
+		This also refreshes the two pets currently shown.
 		"""
 		#Add some stuff here to increment a score in a database
 		self.showPets()
