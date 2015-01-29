@@ -18,10 +18,13 @@ class DatabaseService(object):
 		Success returns None. Failure returns an exception. 
 		"""
 		try:
-			self.con = mdb.connect('localhost', 'testuser', 'test623', 'testdb')
+			self.con = mdb.connect('localhost', 
+								   'testuser', 
+								   'test623', 
+								   'petfinder')
 			self.cur = self.con.cursor()
 		except Exception as e:
-			print "Exception {0} {1}".format(type(e), e)
+			print "Cannot connect to db: {0} {1}".format(type(e), e)
 			return e
 		return None
 			
@@ -40,8 +43,8 @@ class DatabaseService(object):
 		#this function
 		self.cur.execute("CREATE DATABASE petfinder")
 		self.cur.execute("USE petfinder")
-		self.cur.execute("CREATE TABLE cuteornot(Id INT PRIMARY KEY\
-				          AUTO_INCREMENT,"
+		self.cur.execute("CREATE TABLE cuteornot(Id INT PRIMARY KEY " 
+				          "AUTO_INCREMENT,"
 				          "IdNum VARCHAR(25),"
 				          "Name VARCHAR(50),"
 				          "ImageURL VARCHAR(100)")
