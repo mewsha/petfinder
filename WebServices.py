@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from PyQt4.QtGui import *
+from PyQt4 import QtGui
 import urllib2
 import json
 
@@ -87,12 +87,12 @@ class WebServices(object):
 		QPixmap object with the pet's image
 		"""
 		url = pet['photo']
-		imagefile = QImage()
+		imagefile = QtGui.QImage()
 		displayImage = None
 		urldata = urllib2.urlopen(url)
 		imagedata = urldata.read()
 		imagefile.loadFromData(imagedata)
-		displayImage = QPixmap(imagefile)
+		displayImage = QtGui.QPixmap(imagefile)
 		return displayImage
 		
 
