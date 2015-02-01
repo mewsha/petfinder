@@ -14,6 +14,7 @@ class CuteOrNot(QtGui.QDialog):
 		"""
 		QtGui.QDialog.__init__(self)
 		self.petImageDisplayHeight = 300
+		self.petBoardImageDisplayHeight = 150
 		self.webServ = WebServices.WebServices()
 		self.dataServ = DatabaseService.DatabaseService()
 		errors = self.dataServ.generateConnection()
@@ -51,14 +52,19 @@ class CuteOrNot(QtGui.QDialog):
 		layout = self.layout()
 		if (petinfo != () and petinfo != "" and petinfo is not None):
 			label = QtGui.QLabel(str(petinfo))
+			
+			for x in range(len(petinfo)):
+				data = petinfo[x]
+				name = data['name']
+				url = data['url']
+				label = QtGui.QLabel(str(name))
+				layout.addWidget(label, x%3, x)
 		else:
-			label = QtGui.QLabel("pet data")
-		label2 = QtGui.QLabel("scroll here")
+			label = QtGui.QLabel("no pet data")
+			layout.addWidget(label, 0, 1)
 		backButton = QtGui.QPushButton("Back to Pets")
 
-		layout.addWidget(label, 0, 1)
-		layout.addWidget(label2, 0 , 2)
-		layout.addWidget(backButton, 1, 0)
+		layout.addWidget(backButton, (len(petinfo)%3)+1, 0)
 					
 		backButton.clicked.connect(self.showPets)
 
@@ -110,9 +116,9 @@ class CuteOrNot(QtGui.QDialog):
 
 	def showLeaderBoard(self):
 		""" Show the leader board view in the window """
-		tabledata = self.dataServ.queryTable()
+		petsinfo = self.dataServ.queryTable()
 		self.clearLayout(self.layout())
-		self.layoutLeaderboard(tabledata)
+		self.layoutLeaderboard(petsinfo)
 
 		
 	def showPets(self):
