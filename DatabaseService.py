@@ -62,7 +62,6 @@ class DatabaseService(object):
 		formatdata = []
 		for x in range(len(data)):
 			apet = data[x]
-			print apet
 			row = apet[0]
 			idnum = apet[1]
 			name = apet[2]
@@ -90,7 +89,7 @@ class DatabaseService(object):
 		"""Inserts a new pet into the database"""
 		idNum = pet['id']
 		name = pet['name']
-		url = pet['photo']
+		url = pet['url']
 		cols = "IdNum, Name, ImageURL"
 		values = "'{0}', '{1}', '{2}'".format(idNum, name, url)
 		
