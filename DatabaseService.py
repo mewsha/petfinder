@@ -54,13 +54,23 @@ class DatabaseService(object):
 		Dumps the data from the petfinder database.
 		
 		Returns:
-		Data encapsulated in (), python readable as tuples.
+		Array of dictionaries with pet data
 		"""
-		#It would be nice if data was ret python formatted as [{} {}]
 		self.cur.execute("USE petfinder")
 		self.cur.execute("SELECT * FROM cuteornot")
 		data = self.cur.fetchall()
-		return data
+		formatdata = []
+		for x in range(len(data)):
+			apet = data[x]
+			print apet
+			row = apet[0]
+			idnum = apet[1]
+			name = apet[2]
+			url = apet[3]
+			petdict = {"row": row, "idnum": idnum, 
+					   "name": name, "url": url}
+			formatdata.append(petdict)
+		return formatdata
 		
 	
 	def increaseScore(self, pet):
