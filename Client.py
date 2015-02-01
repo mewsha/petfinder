@@ -13,8 +13,8 @@ class CuteOrNot(QtGui.QDialog):
 		Initialize the window with a grid layout.
 		"""
 		QtGui.QDialog.__init__(self)
-		self.petImageDisplayHeight = 300
-		self.petBoardImageDisplayHeight = 150
+		self.petImgDispH = 300
+		self.petSmImgDispH = 150
 		self.webServ = WebServices.WebServices()
 		self.dataServ = DatabaseService.DatabaseService()
 		errors = self.dataServ.generateConnection()
@@ -45,29 +45,50 @@ class CuteOrNot(QtGui.QDialog):
 						self.clearLayout(item.layout())
 
 
-	def layoutLeaderboard(self, petinfo):
+	def layoutLeaderboard(self, petsinfo):
 		"""
 		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
-		if (petinfo != () and petinfo != "" and petinfo is not None):
-			label = QtGui.QLabel(str(petinfo))
-			
-			for x in range(len(petinfo)):
-				data = petinfo[x]
-				name = data['name']
-				url = data['url']
-				label = QtGui.QLabel(str(name))
-				layout.addWidget(label, x%3, x)
+		if (petsinfo != () and petsinfo != "" and petsinfo is not None):
+			row = 0
+			cols = 5
+			for x in range(len(petsinfo)):
+				petdata = petsinfo[x]
+				label = QtGui.QLabel(str(petdata['name']))
+				petimage = self.createPetImageLabel(petdata,
+													self.petSmImgDispH)
+				if(x%cols==0):
+					row=row+2
+				layout.addWidget(label, row, x%cols)
+				layout.addWidget(petimage, row+1, x%cols)
 		else:
 			label = QtGui.QLabel("no pet data")
 			layout.addWidget(label, 0, 1)
 		backButton = QtGui.QPushButton("Back to Pets")
 
-		layout.addWidget(backButton, (len(petinfo)%3)+1, 0)
+		layout.addWidget(backButton, row+2, 0)
 					
 		backButton.clicked.connect(self.showPets)
 
+	def createPetImageLabel(self, petData, imgHeight):
+		"""
+		Creates a QtGui QLabel with an image as the set pixmap. The
+		image is obtained via a pet's url in petData and downloaded
+		by the WebServices.
+		
+		Returns:
+		QtGui.QLabel
+		"""
+		petpxmap = self.webServ.downloadPhoto(petData)
+		petImage = QtGui.QLabel(self)
+		imgPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+									 QtGui.QSizePolicy.Fixed)
+		petImage.setSizePolicy(imgPolicy)
+		petImage.setFixedHeight(imgHeight)
+		petImage.setPixmap(petpxmap.scaledToHeight(imgHeight))
+		return petImage
+		
 
 	def layoutPets(self, pet1Data, pxmap1, pet2Data, pxmap2):
 		"""
@@ -76,16 +97,8 @@ class CuteOrNot(QtGui.QDialog):
 		layout = self.layout()
 
 		label = QtGui.QLabel("Cute Or Not?")
-		pet1Image = QtGui.QLabel(self)
-		pet2Image = QtGui.QLabel(self)
-		imgpolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, 
-									  QtGui.QSizePolicy.Fixed)
-		pet1Image.setSizePolicy(imgpolicy)
-		pet2Image.setSizePolicy(imgpolicy)
-		pet1Image.setFixedHeight(self.petImageDisplayHeight)
-		pet2Image.setFixedHeight(self.petImageDisplayHeight)
-		pet1Image.setPixmap(pxmap1.scaledToHeight(pet1Image.height()))
-		pet2Image.setPixmap(pxmap2.scaledToHeight(pet2Image.height()))
+		pet1Image = self.createPetImageLabel(pet1Data, self.petImgDispH)
+		pet2Image = self.createPetImageLabel(pet2Data, self.petImgDispH)
 		pet1Button = QtGui.QPushButton("I'm Cuter!")
 		pet2Button = QtGui.QPushButton("I'm Cutest!")
 		exitButton = QtGui.QPushButton("Close")
