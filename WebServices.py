@@ -86,7 +86,7 @@ class WebServices(object):
 		Returns:
 		QPixmap object with the pet's image
 		"""
-		url = pet['photo']
+		url = pet['url']
 		imagefile = QtGui.QImage()
 		displayImage = None
 		urldata = urllib2.urlopen(url)
@@ -115,7 +115,7 @@ class WebServices(object):
 			
 			pet =  {'id':idNum, 
 					'name':name,
-					'photo':photo}
+					'url':photo}
 			return pet
 		except (TypeError, KeyError):
 			#AFAP: Pet does not contain data needed, pick again
