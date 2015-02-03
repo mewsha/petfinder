@@ -50,26 +50,32 @@ class CuteOrNot(QtGui.QDialog):
 		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
+		scrollArea = QtGui.QScrollArea()
 		if (petsinfo != () and petsinfo != "" and petsinfo is not None):
-			row = 0
-			cols = 5
-			for x in range(len(petsinfo)):
-				petdata = petsinfo[x]
+			currRow = 0
+			maxCols = 5
+			for i in range(len(petsinfo)):
+				currCol = i % maxCols
+				petdata = petsinfo[i]
 				label = QtGui.QLabel(str(petdata['name']))
 				petimage = self.createPetImageLabel(petdata,
 													self.petSmImgDispH)
-				if(x%cols==0):
-					row=row+2
-				layout.addWidget(label, row, x%cols)
-				layout.addWidget(petimage, row+1, x%cols)
+				isColZero = i % maxCols
+				if(isColZero==0):
+					currRow=currRow+2
+				#set the label to be above the pet image
+				layout.addWidget(label, currRow, currCol)
+				layout.addWidget(petimage, currRow+1, currCol)
 		else:
 			label = QtGui.QLabel("no pet data")
 			layout.addWidget(label, 0, 1)
 		backButton = QtGui.QPushButton("Back to Pets")
 
-		layout.addWidget(backButton, row+2, 0)
+		layout.addWidget(backButton, currRow+2, 0)
 					
 		backButton.clicked.connect(self.showPets)
+		
+		self.adjustSize()
 
 	def createPetImageLabel(self, petData, imgHeight):
 		"""
@@ -116,7 +122,8 @@ class CuteOrNot(QtGui.QDialog):
 		leaderButton.clicked.connect(self.showLeaderBoard)
 		pet1Button.clicked.connect(lambda: self.increaseScore(pet1Data))
 		pet2Button.clicked.connect(lambda: self.increaseScore(pet2Data))
-
+	
+		self.adjustSize()
 
 	def closeWindow(self):
 		"""
@@ -132,7 +139,7 @@ class CuteOrNot(QtGui.QDialog):
 		petsinfo = self.dataServ.queryTable()
 		self.clearLayout(self.layout())
 		self.layoutLeaderboard(petsinfo)
-
+		
 		
 	def showPets(self):
 		""" Show the pet view in the window """
@@ -141,7 +148,7 @@ class CuteOrNot(QtGui.QDialog):
 		pet2Image = self.webServ.downloadPhoto(pet2Data)
 		self.clearLayout(self.layout())
 		self.layoutPets(pet1Data, pet1Image, pet2Data, pet2Image)
-
+		
 
 	def increaseScore(self, pet):
 		"""
