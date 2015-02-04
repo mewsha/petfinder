@@ -33,7 +33,7 @@ class CuteOrNot(QtGui.QDialog):
 			1- hide the widgets
 			2- delete the widgets
 		This prepares the layout for adding new widgets.
-		(Grid layout is not removed.) 
+		(Base Grid layout is not removed.) 
 		"""
 		if(layout is not None):
 			for i in range(layout.count()):
@@ -50,7 +50,6 @@ class CuteOrNot(QtGui.QDialog):
 		Creates and displays UI for the leaderboard view
 		"""
 		layout = self.layout()
-		scrollArea = QtGui.QScrollArea()
 		if (petsinfo != () and petsinfo != "" and petsinfo is not None):
 			currRow = 0
 			maxCols = 5
@@ -58,6 +57,7 @@ class CuteOrNot(QtGui.QDialog):
 				currCol = i % maxCols
 				petdata = petsinfo[i]
 				label = QtGui.QLabel(str(petdata['name']))
+				label.setFixedHeight(30)
 				petimage = self.createPetImageLabel(petdata,
 													self.petSmImgDispH)
 				isColZero = i % maxCols
@@ -68,11 +68,11 @@ class CuteOrNot(QtGui.QDialog):
 				layout.addWidget(petimage, currRow+1, currCol)
 		else:
 			label = QtGui.QLabel("no pet data")
-			layout.addWidget(label, 0, 1)
+			label.addWidget(label, 0, 1)
+			
 		backButton = QtGui.QPushButton("Back to Pets")
-
 		layout.addWidget(backButton, currRow+2, 0)
-					
+			
 		backButton.clicked.connect(self.showPets)
 		
 		self.adjustSize()
@@ -101,7 +101,7 @@ class CuteOrNot(QtGui.QDialog):
 		Creates and displays UI for the Pet view. 
 		"""
 		layout = self.layout()
-
+		
 		label = QtGui.QLabel("Cute Or Not?")
 		pet1Image = self.createPetImageLabel(pet1Data, self.petImgDispH)
 		pet2Image = self.createPetImageLabel(pet2Data, self.petImgDispH)
@@ -118,12 +118,14 @@ class CuteOrNot(QtGui.QDialog):
 		layout.addWidget(exitButton, 3, 0)
 		layout.addWidget(leaderButton, 3, 1)
 
+		self.adjustSize()
+		
 		exitButton.clicked.connect(self.closeWindow)
 		leaderButton.clicked.connect(self.showLeaderBoard)
 		pet1Button.clicked.connect(lambda: self.increaseScore(pet1Data))
 		pet2Button.clicked.connect(lambda: self.increaseScore(pet2Data))
 	
-		self.adjustSize()
+		
 
 	def closeWindow(self):
 		"""
